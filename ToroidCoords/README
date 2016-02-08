@@ -1,1 +1,16 @@
+E821 Note 352 "Analysis of the Magnetic Field for 1998"
+
+NMR readings for the 17 probes requires about 2 sec during which time
+the trolley moves 1 cm. Each NMR reading has an accuracy of about 0.05 ppm.
+The trolley position is calrated from the peak OR steepest slope of the curve
+as it passes a fixed probe. A linear interpolation between 36 fixed probe locations
+is used to correct azimuth (in 1998, azimuth measured by potentiometer.) Short-time
+jitter of trolley by +/- 1 cm. Avg. field inhomogeneity of 5 ppm/cm. Some 6000
+readings per probe.
+
+E821 Note 432 "Analysis of the Magnetic Field for 2000"
+
+The dip at the inflector region seen in 1999 is gone since a new inflector was
+used.
+
 renamed trolley_8_40_41_12_3_101_enc_asc.dat trolley840.dat
