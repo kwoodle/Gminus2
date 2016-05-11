@@ -20,13 +20,11 @@
 //		  (+.50,-.86)					  (-.50,-.86)
 //								(0,-1)
 
-constexpr double pi = boost::math::constants::pi<double>();
 constexpr double rt3_2 = sqrt(3.)/2.;
-const double hz = 61.74E6;		// mixing frequency
-const double Probe::r1 = 1.75;
-const double Probe::rp = 3.5;
+const double TProbe::r1 = 1.75;
+const double TProbe::rp = 3.5;
 
-DMap Probe::make_radii() {
+DMap TProbe::make_radii() {
 	DMap v;
 	v[1] = 0.;
 	for (int i : {2,3,4,5})
@@ -36,9 +34,9 @@ DMap Probe::make_radii() {
 	return v;
 }
 
-DMap Probe::radii = Probe::make_radii();
+DMap TProbe::radii = TProbe::make_radii();
 
-DMap Probe::make_csns() {
+DMap TProbe::make_csns() {
 	DMap v;
 	for (int i : {1, 2, 4, 6, 2})
 		v[i] = 0.;
@@ -51,9 +49,9 @@ DMap Probe::make_csns() {
 
 	return v;
 }
-DMap Probe::csns = Probe::make_csns();
+DMap TProbe::csns = TProbe::make_csns();
 
-DMap Probe::make_sns() {
+DMap TProbe::make_sns() {
 	DMap v;
 	for (int i : {1, 3, 5, 9, 15})
 		v[i] = 0.;
@@ -67,7 +65,7 @@ DMap Probe::make_sns() {
 	return v;
 }
 
-DMap Probe::sns = Probe::make_sns();
+DMap TProbe::sns = TProbe::make_sns();
 
 /*
 4516 251 31628.61 12 3 2001 118 38 4000 1000 1 25 125 16 1 28983 22 6408 5429 339658426 0 4972 5266
@@ -86,18 +84,20 @@ TRow::TRow(std::string l) {
 	double interval, zcs;  // zero crossing interval and crossings
 	double dum;				  // dummy
 	std::stringstream s(l);
-	s >> idx >> dum >> time >> dum >> dum >> dum >>
+	s >> idx >> dum >> pb.time >> dum >> dum >> dum >>
 		dum >> dum >> dum >> dum >> dum >> dum >> dum >>
-		pb.ipb >> chk >> interval >> zcs >> dum >> dum >>
-		uns >> dum >> encl >> encr;
-//	pb.ppm = (zcs>0 && interval>0) ? hz*zcs/interval : -1;
+		pb.iprobe >> chk >> interval >> zcs >> dum >> dum >>
+		uns >> dum >> pb.encl >> pb.encr;
+//	pb.ppm = (zcs>0 && interval>0) ? Mhz*zcs/interval : -1;
 	pb.ppm = (zcs>0 && interval>0) ? zcs/interval*1.e6 : -1;
 }
 
 std::ostream& operator<<(std::ostream& os, const TRow& R) {
-	return os << "idx = " << R.idx << " time = " << R.time <<
-		" ipb = " << R.pb.ipb << " chk = " << R.chk << " ppm = " << R.pb.ppm <<
-		" un sec = " << R.uns << " encodl = " << R.encl << " encodr = " << R.encr;
+//	long ut(R.uns);
+//	std::tm tm = *std::gmtime(&ut);
+	return os << "idx = " << R.idx << " time = " << R.pb.time <<
+		" ipb = " << R.pb.iprobe << " chk = " << R.chk << " ppm = " << R.pb.ppm <<
+		" un sec = " << R.uns << " encodl = " << R.pb.encl << " encodr = " << R.pb.encr;
 }
 
 void Trolley::print_bads(std::ostream& os) const {
@@ -107,7 +107,7 @@ void Trolley::print_bads(std::ostream& os) const {
 }
 void Trolley::print_rows(std::ostream& os) const {
 	for (auto it = rows.begin(); it != rows.end(); ++it) {
-		os << "size rows( " << it->first << ") = " << it->second.size() << std::endl;
+		os << "size Trows(" << it->first << ") = " << it->second.size() << std::endl;
 	}
 }
 bool Trolley::scan() {
@@ -121,7 +121,7 @@ bool Trolley::scan() {
 			if (r.pb.ppm < 0. || r.chk != 1)
 				bads.push_back(r);
 			else
-				rows[r.pb.ipb].push_back(r);
+				rows[r.pb.iprobe].push_back(r);
       }
    fs.close();
    }
