@@ -21,12 +21,12 @@ using namespace std;
 int main(int argc, char** argv) {
 
 	string datdir;
-	
-	if (const char* env_h = std::getenv("HOME")) {
+
+    if (const char* env_h = std::getenv("PWD")) {
 		datdir = env_h;
-		datdir += "/NetBeansProjects/Rough/";
+        datdir += "/../data/";
 	} else {
-		cerr << "Failed to get HOME";
+        cerr << "Failed to get PWD";
 		exit(1);
 	}
 
